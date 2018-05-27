@@ -2,8 +2,9 @@
 编译TEXTHOOK.cpp生成ch.dll
 将MAJO_text.exe & ch.dll & MAJOKOIchs.exe放到游戏根目录下
 运行MAJO_text.exe（只实现日文文本提取）
-运行MAJO.py(可翻译) 依赖库 --- requests pyexecjs 
+运行MAJO.py(可翻译) 依赖库 --- requests execjs 
 
+--- 运行MAJO.py前需要手动从浏览器复制一个cookie到脚本中
 
 
 
