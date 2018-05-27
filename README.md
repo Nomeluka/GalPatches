@@ -1,1 +1,1 @@
-# PATCH
+patches for galgames
