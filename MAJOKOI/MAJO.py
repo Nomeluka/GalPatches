@@ -37,18 +37,23 @@ def Control():
 	#²¹¶¡¿ØÖÆÁ÷
 	se = requests.Session()
 	urlg = "https://translate.google.cn/"
-	#hds = {"upgrade-insecure-requests":"1","cache-control":"max-age=0","accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8","user-agent":"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"}
 	header = {
 		'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
 		'accept-encoding':'gzip, deflate, br',
 		'accept-language':'zh-CN,zh;q=0.9,es;q=0.8',
 		'cache-control': 'max-age=0',
-		'cookie': '_ga=GA1.3.1606382638.1527305816; _gid=GA1.3.991163329.1527305816; 1P_JAR=2018-5-27-15; NID=131=ZZjFP9OIw4BlfMEqzp8gozSaJu2-wTc-URCww1s1KA-0n-RnneMnxSba-xExoGMUA_lyTan4F8N-gNxO7RAECOEjZutCzMHQN8aRymATe9wcnY7Npw12OwsOHPq_oJIu',
 		'upgrade-insecure-requests': '1',
-		'user-agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
-		'x-client-data': 'CIu2yQEIo7bJAQjEtskBCKmdygEIqKPKAQ=='
+		'user-agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'
 	}
 	r = requests.get(urlg,headers=header);
+	'''
+	hd = str(r.headers)
+	print(hd)
+	sx1 = hd.find('Set-Cookie')
+	sx2 = hd[sx1:len(hd)].find(';')
+	ck = hd[sx1+14:sx2]# set cookie
+	print("\n"+ck+"\n")
+	'''
 	t = r.text
 	a = t.find("TKK")
 	t = t[a:a+100]
@@ -109,7 +114,7 @@ def Control():
 				gs = TranslateUTF8(s)
 				tk = ctx.call("tk",sjis,strTKK)
 				#print("tk = ",tk)
-				res = requests.get(url+"&tk="+tk+"&q="+gs)
+				res = requests.get(url+"&tk="+tk+"&q="+gs,headers = header)
 				#print("status_code = ",res.status_code)
 				if res.status_code == "404":
 					break

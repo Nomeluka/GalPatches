@@ -4,7 +4,7 @@
 运行MAJO_text.exe（只实现日文文本提取）
 运行MAJO.py(可翻译) 依赖库 --- requests execjs 
 
---- 运行MAJO.py前需要手动从浏览器复制一个cookie到脚本中
+--- 正常运行MAJO.py需要在ipv6环境下
 
 
 
@@ -17,3 +17,5 @@
 6.根据TKK和字符内容生成TK参数
 7.google发包获得翻译内容
 
+
+--- 还需解决问题 1.同步 2.特殊编码异常 3.JSON提取不全
