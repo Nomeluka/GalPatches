@@ -1,7 +1,7 @@
 [MAJOKOIplus]
 编译hook.cpp生成ch.dll
 将ch.dll & MAJOKOIchsPlus.exe & MAJO.py放到游戏根目录下
-运行MAJO.py 
+运行MAJO.py & MAJOKOIchsPlus.exe
 
 
   --- 依赖库 requests execjs 
