@@ -122,16 +122,25 @@ def Control():
 				if res.status_code == "404":
 					break
 				
-				txt = res.text;
-				x1 = txt.find('\"')
-				x2 = 0
-				for i in range(x1+1,len(txt)):
-					if txt[i]=="\"":
-						x2 = i
+				txt = res.text
+				#print(txt)
+				strings = re.findall(r"\"(.*?)\"",txt)
+				index = 0
+				tl = ""
+				for i in range(0,len(strings)):
+					if len(strings[i])==2 and strings[i] == "ja":
+						index = i 
 						break;
+				nn = int((index-2)/2)
 				
-				tl = txt[x1+1:x2]
-				print(tl+"\n\n")
+				for i in range(0,nn):
+					tl = tl + strings[2*i]
+				
+				#print(strings)
+				pr = strings[index - 1]
+				print(pr)
+				print(tl)
+				print("\n\n")
 				
 #		else:
 #			#fi.close()
