@@ -12,6 +12,8 @@ PAL.dll中存在两种字符画图机制
 2.修改PAL.0x10008380中的字体结构体信息，charset=0x86
 3.修改Pal.dll中的字体名称字符串。
 
+[字符边界检查补丁]
+1.在MAJOKOI.exe 0x4262B0处修改边界检查边界值
 =======================================
 //首先调用PalFontBegin做准备
 PalFontBegin@0x10009150
@@ -32,8 +34,9 @@ PAL.0x10008380填写字体结构体信息，并调用CreateFontA创建字体
 如果是4，不调用PAL.0x10008380
 
 ======================================
+PalFontBegin返回后在主线程中做字符边界检查0x4262B0(IDAPRO MAJOKOI.exe)
+再调用PalFontDrawText画图
 
-PalFontBegin返回后调用PalFontDrawText画图
 PalFontDrawText@0x10009020
 
 提取字符位图和画图功能由PAL.0x10008AD0实现
@@ -48,8 +51,6 @@ PAL.0x10008AD0
 如果为4，调用PAL.0x10008010从DEFAULT_FONT中提取位图并将位图放入新的buf中
 并更新GLYPHMETRICS(gm)结构体
 .text:10008C00                 call    sub_10008010
-
-字符编码边界检查(0x10008C0E-0x10008C50)
 
 画图
 ======================================
