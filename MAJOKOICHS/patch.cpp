@@ -46,6 +46,7 @@ extern "C" __declspec(dllexport) void signal(unsigned int pos1, unsigned int pos
 extern "C" __declspec(dllexport) void rewriteTXT(unsigned int text_end) {
 	unsigned int tail;
 	unsigned int base;
+	unsigned int pos_relocate2;
 	__asm{
 		mov eax, dword ptr ss:[text_end]; 
 		mov tail,eax;
@@ -59,7 +60,15 @@ l:
 		jnz l
 f:
 		mov base, eax;
+
+		inc eax;
+		mov edx, dword ptr ds:[eax-0x174];
+		mov pos_relocate2, edx;
+		mov dl, byte ptr 0x00;
 	}
+
+
+	SetOriginOrder(pos_relocate2);
 
 	unsigned char* pstr = GetChsText();
 
@@ -81,11 +90,17 @@ extern "C" __declspec(dllexport) void rewriteNM(unsigned int name_start) {
 	else{
 
 		unsigned int base;
+		unsigned int pos_relocate1;
 
 		__asm{
 			mov eax, dword ptr ss:[name_start];
 			mov dword ptr base, eax;
+
+			mov edx, dword ptr ds:[eax - 0x70];
+			mov pos_relocate1, edx;
 		}
+
+		SetOriginOrder(pos_relocate1);
 
 		unsigned char* pstr = GetChsName();
 
@@ -97,8 +112,6 @@ extern "C" __declspec(dllexport) void rewriteNM(unsigned int name_start) {
 			}
 		}
 		
-		char zero[1] = {0x00};
 		memcpy((unsigned char*)base,pstr,len);
-		memcpy((unsigned char*)base+len,zero,1);
 	}
 }
