@@ -1,0 +1,104 @@
+#include <windows.h>
+#include <iostream>
+#include <stdio.h>
+#include "patch.h"
+
+static unsigned int a;//text start
+static unsigned int b;//text end 
+					 //Narrator 0x0fffffff
+
+static unsigned int script_pos;
+
+INT APIENTRY DllMain(HMODULE hDLL, DWORD Reason, LPVOID Reserved) {
+
+    switch(Reason) {
+    case DLL_PROCESS_ATTACH:
+        break;
+    case DLL_PROCESS_DETACH:
+        break;
+    }
+    return TRUE;
+}
+
+void SetOriginOrder(unsigned int ay){
+	script_pos = *(unsigned int*)(ordermap+ay);
+}
+
+unsigned char* GetChsName(){
+	return chstext[script_pos+1];
+}
+
+unsigned char* GetChsText(){
+	if(chstext[script_pos][0]!=0x00){
+		return chstext[script_pos];
+	}
+	else{
+		return chstextbuf + (*(unsigned int*)(chstext[script_pos]+1));
+	}
+}
+
+extern "C" __declspec(dllexport) void signal(unsigned int pos1, unsigned int pos2){
+	b = pos1;
+	a = pos2;
+	SetOriginOrder(a);
+}
+
+extern "C" __declspec(dllexport) void rewriteTXT(unsigned int text_end) {
+	unsigned int tail;
+	unsigned int base;
+	__asm{
+		mov eax, dword ptr ss:[text_end]; 
+		mov tail,eax;
+		mov dl, byte ptr ds:[eax - 1];
+		cmp dl, 0x00;
+		jz f
+l:
+		dec eax;
+		mov dl, byte ptr ds:[eax];
+		cmp dl,0x00;
+		jnz l
+f:
+		mov base, eax;
+	}
+
+	unsigned char* pstr = GetChsText();
+
+	int len = 0;
+	for(len=0;;len++){
+		if(pstr[len]== 0x00){
+			len += 1 ;
+			break;
+		}
+	}
+
+	memcpy((unsigned char*)(base+1),pstr,len);
+}
+
+extern "C" __declspec(dllexport) void rewriteNM(unsigned int name_start) {
+	if(b == 0xfffffff){
+		return;
+	}
+	else{
+
+		unsigned int base;
+
+		__asm{
+			mov eax, dword ptr ss:[name_start];
+			mov dword ptr base, eax;
+		}
+
+		unsigned char* pstr = GetChsName();
+
+		int len = 0;
+		for(len=0;;len++){
+			if(pstr[len]== 0x00){
+				len += 1 ;
+				break;
+			}
+		}
+		
+		char zero[1] = {0x00};
+		memcpy((unsigned char*)base,pstr,len);
+		memcpy((unsigned char*)base+len,zero,1);
+	}
+}
